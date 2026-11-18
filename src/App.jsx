@@ -173,7 +173,7 @@ export default function App() {
               </button>
             </div>
             <div className="p-2 flex items-center justify-center max-h-[80vh] overflow-auto">
-              <img src={`/${lightboxImage}`} alt="Ảnh gốc đề thi" className="max-w-full h-auto rounded-lg object-contain shadow" />
+              <img src={encodeURI(`/${lightboxImage}`)} alt="Ảnh gốc đề thi" className="max-w-full h-auto rounded-lg object-contain shadow" />
             </div>
           </div>
         </div>
