@@ -750,9 +750,10 @@ function QuizView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
 
 // FLASHCARD VIEW
 function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
-  const [filterExam, setFilterExam] = useState('ALL');
+  const [filterExam, setFilterExam] = useState(() => {
+    try { return localStorage.getItem('prm_flashcard_filter') || 'ALL'; } catch { return 'ALL'; }
+  });
   const [flipped, setFlipped] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [masteredIds, setMasteredIds] = useState(() => {
     try { return JSON.parse(localStorage.getItem('prm_mastered') || '[]'); } catch { return []; }
   });
@@ -768,6 +769,38 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
     }
     return list;
   }, [allQuestions, filterExam, bookmarks]);
+
+  const [currentIndex, setCurrentIndex] = useState(() => {
+    try {
+      const savedFilter = localStorage.getItem('prm_flashcard_filter') || 'ALL';
+      const map = JSON.parse(localStorage.getItem('prm_flashcard_progress_map') || '{}');
+      if (typeof map[savedFilter] === 'number') return map[savedFilter];
+      const saved = localStorage.getItem('prm_flashcard_index');
+      return saved ? parseInt(saved, 10) || 0 : 0;
+    } catch {
+      return 0;
+    }
+  });
+
+  // Keep index within deck bounds
+  useEffect(() => {
+    if (deck.length > 0 && currentIndex >= deck.length) {
+      setCurrentIndex(0);
+    }
+  }, [deck.length, currentIndex]);
+
+  // Persist flashcard progress to local storage
+  useEffect(() => {
+    try {
+      localStorage.setItem('prm_flashcard_filter', filterExam);
+      localStorage.setItem('prm_flashcard_index', currentIndex.toString());
+      const map = JSON.parse(localStorage.getItem('prm_flashcard_progress_map') || '{}');
+      map[filterExam] = currentIndex;
+      localStorage.setItem('prm_flashcard_progress_map', JSON.stringify(map));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [currentIndex, filterExam]);
 
   const currCard = deck[currentIndex] || deck[0];
 
@@ -834,36 +867,65 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 py-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <select
-          value={filterExam}
-          onChange={e => {
-            setFilterExam(e.target.value);
-            setCurrentIndex(0);
-            setFlipped(false);
-          }}
-          className="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-fpt-orange"
-        >
-          <option value="ALL">Tất cả đề ({allQuestions.length} câu)</option>
-          {exams.map(ex => (
-            <option key={ex} value={ex}>{ex}</option>
-          ))}
-          {bookmarks.length > 0 && (
-            <option value="BOOKMARKED">⭐ Đã đánh dấu ({bookmarks.length} câu)</option>
-          )}
-        </select>
-
-        <div className="flex items-center space-x-2">
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-            Thẻ {currentIndex + 1} / {deck.length}
-          </span>
-          <button
-            onClick={shuffleDeck}
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white bg-slate-100 dark:bg-slate-800 transition"
-            title="Xáo trộn ngẫu nhiên"
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <select
+            value={filterExam}
+            onChange={e => {
+              const nextFilter = e.target.value;
+              setFilterExam(nextFilter);
+              try {
+                const map = JSON.parse(localStorage.getItem('prm_flashcard_progress_map') || '{}');
+                const savedIdx = typeof map[nextFilter] === 'number' ? map[nextFilter] : 0;
+                setCurrentIndex(savedIdx);
+              } catch {
+                setCurrentIndex(0);
+              }
+              setFlipped(false);
+            }}
+            className="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-fpt-orange"
           >
-            <RotateIcon />
-          </button>
+            <option value="ALL">Tất cả đề ({allQuestions.length} câu)</option>
+            {exams.map(ex => (
+              <option key={ex} value={ex}>{ex}</option>
+            ))}
+            {bookmarks.length > 0 && (
+              <option value="BOOKMARKED">⭐ Đã đánh dấu ({bookmarks.length} câu)</option>
+            )}
+          </select>
+
+          <div className="flex items-center space-x-2">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+              Thẻ {currentIndex + 1} / {deck.length} ({Math.round(((currentIndex + 1) / deck.length) * 100)}%)
+            </span>
+            <button
+              onClick={() => {
+                if (window.confirm('Bạn có muốn đặt lại tiến trình về thẻ đầu tiên?')) {
+                  setCurrentIndex(0);
+                  setFlipped(false);
+                }
+              }}
+              className="p-1.5 px-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-800 transition text-xs font-bold"
+              title="Về thẻ đầu tiên"
+            >
+              ⏮ Về đầu
+            </button>
+            <button
+              onClick={shuffleDeck}
+              className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white bg-slate-100 dark:bg-slate-800 transition"
+              title="Xáo trộn ngẫu nhiên"
+            >
+              <RotateIcon />
+            </button>
+          </div>
+        </div>
+
+        {/* Thanh tiến trình Flashcard */}
+        <div className="w-full bg-slate-200 dark:bg-slate-700/60 h-1.5 rounded-full overflow-hidden">
+          <div 
+            className="bg-gradient-to-r from-orange-400 to-fpt-orange h-full rounded-full transition-all duration-300"
+            style={{ width: `${Math.min(100, Math.max(0, ((currentIndex + 1) / deck.length) * 100))}%` }}
+          />
         </div>
       </div>
 
