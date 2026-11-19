@@ -723,80 +723,82 @@
     "id": "prm393___sp26___fe_001",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 1,
-    "question": "Dép in: { B } Why is clean architecture beneficial? Fewer files",
+    "question": "Why is clean architecture beneficial?",
     "options": {
+      "A": "Fewer files",
       "B": "Easier maintenance and testing",
-      "C": "Better UI Faster builds"
+      "C": "Better UI",
+      "D": "Faster builds"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Clean Architecture tách biệt ứng dụng thành các tầng độc lập (Data, Domain, Presentation), giúp mã nguồn dễ bảo trì, mở rộng và viết unit test hơn rất nhiều.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_1.webp"
   },
   {
     "id": "prm393___sp26___fe_002",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 2,
-    "question": "Dép in: { B } What does CurvedAnimation provide?",
+    "question": "What does CurvedAnimation provide?",
     "options": {
       "A": "Layout control",
       "B": "Animation curve behavior",
       "C": "State updates",
       "D": "Navigation"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "CurvedAnimation áp dụng đường cong chuyển động phi tuyến tính (curve behavior như Curves.easeInOut) cho một Animation object.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_10.webp"
   },
   {
     "id": "prm393___sp26___fe_003",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 3,
-    "question": "Dép in: { B } How can data be passed to a new screen?",
+    "question": "How can data be passed to a new screen?",
     "options": {
       "A": "Using global variables",
       "B": "Via constructor arguments",
-      "C": "using ThemeData",
-      "D": "using Scaffold"
+      "C": "Using ThemeData",
+      "D": "Using Scaffold"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Trong Flutter, cách truyền dữ liệu chuẩn và an toàn nhất giữa các màn hình là truyền qua các tham số của constructor của widget màn hình đích.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_11.webp"
   },
   {
     "id": "prm393___sp26___fe_004",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 4,
-    "question": "Dép in: { B } What is the purpose of parsing JSON?",
+    "question": "What is the purpose of parsing JSON?",
     "options": {
       "A": "Encrypt data",
       "B": "Convert JSON into Dart objects",
       "C": "Send requests",
       "D": "Cache responses"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Parsing JSON chuyển đổi chuỗi dữ liệu định dạng JSON nhận từ server thành các đối tượng/Model trong Dart để dễ dàng truy xuất và thao tác an toàn về kiểu dữ liệu.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_12.webp"
   },
   {
     "id": "prm393___sp26___fe_005",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 5,
-    "question": "Dép in: { C } Which phase involves gathering requirements?",
+    "question": "Which phase involves gathering requirements?",
     "options": {
       "A": "Implementation",
       "B": "Design",
       "C": "Analysis",
       "D": "Testing"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "C",
+    "explanation": "Giai đoạn phân tích (Analysis / Requirements Gathering) trong quy trình phát triển phần mềm chịu trách nhiệm thu thập, làm rõ và phân tích các yêu cầu của hệ thống.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_13.webp"
   },
   {
     "id": "prm393___sp26___fe_006",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 6,
-    "question": "Dép in: { A } Which Flutter tool helps debug network requests?",
+    "question": "Which Flutter tool helps debug network requests?",
     "options": {
       "A": "DevTools",
       "B": "Inspector",
@@ -804,66 +806,67 @@
       "D": "Hot reload"
     },
     "correctAnswer": "A",
-    "explanation": "",
+    "explanation": "Flutter DevTools có tab Network chuyên dụng cho phép kiểm tra chi tiết các HTTP request, response payload, headers và thời gian phản hồi.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_14.webp"
   },
   {
     "id": "prm393___sp26___fe_007",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 7,
-    "question": "Dép in: { B } Which Dart feature supports object-oriented programming?",
+    "question": "Which Dart feature supports object-oriented programming?",
     "options": {
       "A": "Widgets",
       "B": "Classes and objects",
       "C": "Hot reload",
-      "D": "Layout builders Exam,"
+      "D": "Layout builders"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Dart là ngôn ngữ hướng đối tượng (OOP) thuần túy dựa trên các lớp (classes) và đối tượng (objects).",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_15.webp"
   },
   {
     "id": "prm393___sp26___fe_008",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 8,
-    "question": "Dép in: { B } Which approach helps reduce unnecessary widget rebuilds?",
+    "question": "Which approach helps reduce unnecessary widget rebuilds?",
     "options": {
-      "A": "Using global variables Fine-grained state updates",
+      "A": "Using global variables",
+      "B": "Fine-grained state updates",
       "C": "Hot restart",
-      "D": "Large widgets Exam."
+      "D": "Large widgets"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Cập nhật trạng thái ở phạm vi nhỏ, chi tiết (fine-grained state updates) chỉ kích hoạt rebuild đúng các widget cần thay đổi, tránh rebuild cả cây widget lớn.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_16.webp"
   },
   {
     "id": "prm393___sp26___fe_009",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 9,
-    "question": "Dép in: { B } Which action best demonstrates Flutter's reactive UI model?",
+    "question": "Which action best demonstrates Flutter's reactive UI model?",
     "options": {
       "A": "Manually updating UI elements",
       "B": "Rebuilding UI in response to state changes",
       "C": "Editing layout XML",
       "D": "Calling native APIs"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Mô hình reactive của Flutter hoạt động theo nguyên lý UI là hàm của State: khi State thay đổi, framework sẽ tự động kích hoạt rebuild lại cây widget tương ứng.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_17.webp"
   },
   {
     "id": "prm393___sp26___fe_010",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 10,
-    "question": "Dép in: { B } Why are const widgets recommended?",
+    "question": "Why are const widgets recommended?",
     "options": {
       "A": "They improve readability",
       "B": "They reduce rebuild cost",
       "C": "They add state",
       "D": "They handle navigation"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Sử dụng const constructor giúp Flutter nhận biết widget không đổi và tái sử dụng lại instance đã tạo trong bộ nhớ, loại bỏ hoàn toàn chi phí rebuild lại widget đó.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_18.webp"
   },
   {
@@ -878,82 +881,82 @@
       "D": "Fix layout"
     },
     "correctAnswer": "B",
-    "explanation": "Đáp án tham khảo chính thức theo đề thi: B.",
+    "explanation": "AnimationController lắng nghe Ticker của hệ điều hành; nếu không gọi dispose() trong hàm dispose của State, các listener sẽ tiếp tục chạy ngầm gây rò rỉ bộ nhớ (memory leaks).",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_19.webp"
   },
   {
     "id": "prm393___sp26___fe_012",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 12,
-    "question": "Dép in: { C } What is Dart primarily designed for in the Flutter ecosystem?",
+    "question": "What is Dart primarily designed for in the Flutter ecosystem?",
     "options": {
       "A": "Database management",
-      "B": "user Interface development",
+      "B": "User Interface development",
       "C": "General-purpose programming with UI focus",
-      "D": "Netv.'ork security"
+      "D": "Network security"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "C",
+    "explanation": "Dart được Google phát triển như một ngôn ngữ đa năng (general-purpose) được tối ưu hóa đặc biệt cho việc xây dựng giao diện người dùng (UI-focused client development).",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_2.webp"
   },
   {
     "id": "prm393___sp26___fe_013",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 13,
-    "question": "Dép in: { B } Which Flutter test focuses on UI components?",
+    "question": "Which Flutter test focuses on UI components?",
     "options": {
       "A": "Unit test",
       "B": "Widget test",
       "C": "Integration test",
-      "D": "Load test Exam."
+      "D": "Load test"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Widget test (component test) trong Flutter kiểm tra giao diện và phản hồi tương tác người dùng của từng widget đơn lẻ mà không cần chạy trên thiết bị thật.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_20.webp"
   },
   {
     "id": "prm393___sp26___fe_014",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 14,
-    "question": "Dép in: { B } Why should database operations be asynchronous?",
+    "question": "Why should database operations be asynchronous?",
     "options": {
-      "A": "Simplib' syntax",
+      "A": "Simplify syntax",
       "B": "Avoid blocking UI thread",
       "C": "Reduce code",
       "D": "Improve theme"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Các thao tác I/O với database thường tốn thời gian; thực hiện bất đồng bộ (asynchronous) giúp UI thread chính không bị treo, giữ ứng dụng luôn mượt mà đạt 60/120 FPS.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_21.webp"
   },
   {
     "id": "prm393___sp26___fe_015",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 15,
-    "question": "Dép in: { B } Why is Chapter 13 considered optional (Plus)?",
+    "question": "Why is Chapter 13 considered optional (Plus)?",
     "options": {
       "A": "It replaces core concepts",
       "B": "Apps can work without deep optimization",
       "C": "It manages navigation",
-      "D": "It handles authentication Exam."
+      "D": "It handles authentication"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Các nội dung nâng cao/tối ưu hóa sâu thường là tùy chọn vì ứng dụng cơ bản vẫn có thể chạy và hoạt động tốt mà không bắt buộc phải áp dụng ngay từ đầu.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_22.webp"
   },
   {
     "id": "prm393___sp26___fe_016",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 16,
-    "question": "Dép in: { C } Which widget applies a theme to an entire Flutter application?",
+    "question": "Which widget applies a theme to an entire Flutter application?",
     "options": {
       "A": "Scaffold",
       "B": "Theme",
       "C": "MaterialApp",
       "D": "Container"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "C",
+    "explanation": "MaterialApp nhận thuộc tính theme (ThemeData) và áp dụng cấu hình màu sắc, typography toàn cục cho toàn bộ các màn hình trong ứng dụng.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_23.webp"
   },
   {
@@ -968,126 +971,127 @@
       "D": "Drawer control"
     },
     "correctAnswer": "B",
-    "explanation": "Đáp án tham khảo chính thức theo đề thi: B.",
+    "explanation": "SliverAppBar kết hợp với CustomScrollView cung cấp thanh AppBar cuộn co giãn linh hoạt (collapsible/floating), biến đổi kích thước khi người dùng cuộn danh sách.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_24.webp"
   },
   {
     "id": "prm393___sp26___fe_018",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 18,
-    "question": "Dép in: { C } Which widget is best used to add fixed empty space?",
+    "question": "Which widget is best used to add fixed empty space?",
     "options": {
-      "A": "Paddlng",
+      "A": "Padding",
       "B": "Expanded",
       "C": "SizedBox",
-      "D": "Contaner"
+      "D": "Container"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "C",
+    "explanation": "SizedBox với width hoặc height cố định là widget nhẹ và tối ưu nhất để tạo khoảng trống cố định giữa các widget trong Row hoặc Column.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_25.webp"
   },
   {
     "id": "prm393___sp26___fe_019",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 19,
-    "question": "Dép in: { B } Which package supports BLoC architecture?",
+    "question": "Which package supports BLoC architecture?",
     "options": {
       "A": "provider",
-      "B": "flutter bloc",
+      "B": "flutter_bloc",
       "C": "sqflite",
       "D": "http"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Package flutter_bloc cung cấp các widget như BlocProvider, BlocBuilder, BlocConsumer để triển khai mẫu kiến trúc BLoC trong Flutter.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_26.webp"
   },
   {
     "id": "prm393___sp26___fe_020",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 20,
-    "question": "Dép in: { B } Which Flutter widget reacts to authentication state changes?",
+    "question": "Which Flutter widget reacts to authentication state changes?",
     "options": {
       "A": "FutureBuilder",
-      "B": "StreamBuiIder",
+      "B": "StreamBuilder",
       "C": "ListView",
       "D": "Form"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Trạng thái đăng nhập thường được phát ra liên tục qua một Stream (ví dụ từ Firebase Auth hay BLoC state); StreamBuilder tự động lắng nghe và rebuild giao diện tương ứng.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_27.webp"
   },
   {
     "id": "prm393___sp26___fe_021",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 21,
-    "question": "Dép in: { B } What is technical debt?",
+    "question": "What is technical debt?",
     "options": {
-      "A": "Ullag",
+      "A": "UI lag",
       "B": "Future cost of poor design decisions",
       "C": "Memory usage",
-      "D": "API limit exam"
+      "D": "API limit"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Nợ kỹ thuật (Technical Debt) là chi phí phát sinh trong tương lai (thời gian sửa lỗi, khó bảo trì) do việc đưa ra các quyết định thiết kế hoặc viết code vội vàng, kém chất lượng ban đầu.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_28.webp"
   },
   {
     "id": "prm393___sp26___fe_022",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 22,
-    "question": "Dép in: { B } What is implicit animation?",
+    "question": "What is implicit animation?",
     "options": {
       "A": "Manual animation control",
       "B": "Animation without controller",
       "C": "API animation",
       "D": "Navigation animation"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Implicit animation (như AnimatedContainer, AnimatedOpacity) tự động nội suy chuyển động giữa các giá trị khi widget rebuild mà không cần nhà phát triển phải tự quản lý AnimationController.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_29.webp"
   },
   {
     "id": "prm393___sp26___fe_023",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 23,
-    "question": "Dép in: { B } Why is secure authentication critical in mobile apps?",
+    "question": "Why is secure authentication critical in mobile apps?",
     "options": {
       "A": "UI quality",
       "B": "Protect user data",
       "C": "Reduce code",
       "D": "Improve speed"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Cơ chế xác thực an toàn đảm bảo chỉ người dùng hợp lệ mới có quyền truy cập, ngăn chặn truy cập trái phép và bảo vệ dữ liệu cá nhân nhạy cảm.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_3.webp"
   },
   {
     "id": "prm393___sp26___fe_024",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 24,
-    "question": "Dép in: { C } Which Dart data structure is best suited for storing an ordered collection of items? Set",
+    "question": "Which Dart data structure is best suited for storing an ordered collection of items?",
     "options": {
+      "A": "Set",
       "B": "Map",
       "C": "List",
       "D": "Queue"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "C",
+    "explanation": "Trong Dart, List là cấu trúc dữ liệu lưu trữ tập hợp các phần tử theo thứ tự có chỉ số (index-based ordered collection).",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_30.webp"
   },
   {
     "id": "prm393___sp26___fe_025",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 25,
-    "question": "Dép in: { B } Which Flutter concept supports reactive UI updates?",
+    "question": "Which Flutter concept supports reactive UI updates?",
     "options": {
       "A": "Manual refresh",
       "B": "Widget rebuilding",
       "C": "Hot restart",
       "D": "Native callbacks"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Cơ chế reactive của Flutter dựa trên việc 'rebuilding' các widget: khi state thay đổi, framework gọi lại phương thức build() để cập nhật cây widget mới.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_31.webp"
   },
   {
@@ -1098,101 +1102,101 @@
     "options": {
       "A": "Widget test",
       "B": "Integration test",
-      "C": "unit test",
+      "C": "Unit test",
       "D": "System test"
     },
     "correctAnswer": "C",
-    "explanation": "Đáp án tham khảo chính thức theo đề thi: C.",
+    "explanation": "Unit test (kiểm thử đơn vị) tập trung kiểm thử các hàm, phương thức hoặc class riêng lẻ một cách độc lập để đảm bảo logic hoạt động chính xác.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_32.webp"
   },
   {
     "id": "prm393___sp26___fe_027",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 27,
-    "question": "Dép in: { B } What is the role of events in BLoC?",
+    "question": "What is the role of events in BLoC?",
     "options": {
       "A": "Store UI",
       "B": "Trigger state changes",
       "C": "Render widgets",
       "D": "Handle layout"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Trong kiến trúc BLoC, Events là dữ liệu đầu vào (input) từ phía UI hoặc hệ thống gửi tới BLoC để kích hoạt xử lý nghiệp vụ và phát ra State mới.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_33.webp"
   },
   {
     "id": "prm393___sp26___fe_028",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 28,
-    "question": "Dép in: { B } What is the main purpose of hot reload in Flutter?",
+    "question": "What is the main purpose of hot reload in Flutter?",
     "options": {
       "A": "Improve runtime performance",
       "B": "Instantly reflect code changes in UI",
       "C": "Publish apps faster",
       "D": "Reduce memory usage"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Hot Reload cho phép đưa trực tiếp thay đổi trong mã nguồn vào máy ảo Dart đang chạy và cập nhật giao diện trong chưa đầy 1 giây mà vẫn giữ nguyên trạng thái (state) của ứng dụng.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_34.webp"
   },
   {
     "id": "prm393___sp26___fe_029",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 29,
-    "question": "Dép in: { B } Why are forms important in mobile applications?",
+    "question": "Why are forms important in mobile applications?",
     "options": {
       "A": "UI decoration",
-      "B": "user data collection",
+      "B": "User data collection",
       "C": "State management",
       "D": "Navigation"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Form cung cấp giao diện chuẩn hóa kèm theo validation để thu thập, kiểm tra tính hợp lệ và xử lý dữ liệu nhập vào từ phía người dùng.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_35.webp"
   },
   {
     "id": "prm393___sp26___fe_030",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 30,
-    "question": "Dép in: { A } Which method retrieves data from SharedPreferences?",
+    "question": "Which method retrieves data from SharedPreferences?",
     "options": {
-      "A": "get?",
+      "A": "get()",
       "B": "read()",
       "C": "fetch()",
       "D": "load()"
     },
     "correctAnswer": "A",
-    "explanation": "",
+    "explanation": "SharedPreferences cung cấp các phương thức getter như get(), getInt(), getString(), getBool() để lấy giá trị đã lưu theo key.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_36.webp"
   },
   {
     "id": "prm393___sp26___fe_031",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 31,
-    "question": "Dép in: { B } What is the main benefit of Flutter's widget-based architecture?",
+    "question": "What is the main benefit of Flutter's widget-based architecture?",
     "options": {
       "A": "Widgets are only used for layout design",
       "B": "Widgets allow code reuse across platforms",
       "C": "Widgets automatically manage databases",
       "D": "Widgets replace backend services"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Mọi thứ trong Flutter đều là Widget; kiến trúc widget dạng component cho phép viết mã nguồn một lần và tái sử dụng nhất quán trên Android, iOS, Web và Desktop.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_37.webp"
   },
   {
     "id": "prm393___sp26___fe_032",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 32,
-    "question": "Dép in: { B } Why are widgets lighweight in Flutter?",
+    "question": "Why are widgets lightweight in Flutter?",
     "options": {
       "A": "They manage system resources",
       "B": "They are immutable descriptions",
-      "C": "They store Ulstate",
+      "C": "They store UI state",
       "D": "They handle rendering directly"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Widget trong Flutter chỉ là các cấu hình mô tả giao diện bất biến (immutable configurations), việc tạo và hủy widget rất rẻ, việc vẽ thực tế do RenderObject đảm nhận.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_38.webp"
   },
   {
@@ -1207,96 +1211,97 @@
       "D": "Simplify layout"
     },
     "correctAnswer": "B",
-    "explanation": "Đáp án tham khảo chính thức theo đề thi: B.",
+    "explanation": "Tập trung hóa trạng thái xác thực giúp kiểm soát quyền truy cập nhất quán trên toàn bộ ứng dụng, dễ dàng điều hướng khi token hết hạn hoặc khi người dùng logout.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_39.webp"
   },
   {
     "id": "prm393___sp26___fe_034",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 34,
-    "question": "Dép in: { C } Which HTTP method is typically used to retrieve data? poST",
+    "question": "Which HTTP method is typically used to retrieve data?",
     "options": {
+      "A": "POST",
       "B": "PUT",
       "C": "GET",
       "D": "DELETE"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "C",
+    "explanation": "Phương thức HTTP GET được quy chuẩn dùng để truy xuất và lấy tài nguyên/dữ liệu từ server mà không làm thay đổi trạng thái của hệ thống.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_4.webp"
   },
   {
     "id": "prm393___sp26___fe_035",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 35,
-    "question": "Dép in: { A } Which widget can hide user input text when configured for password entry?",
+    "question": "Which widget can hide user input text when configured for password entry?",
     "options": {
       "A": "TextField",
       "B": "ObscureText",
-      "C": "Securelnput",
+      "C": "SecureInput",
       "D": "PasswordField"
     },
     "correctAnswer": "A",
-    "explanation": "",
+    "explanation": "Widget TextField (hoặc TextFormField) khi đặt thuộc tính obscureText: true sẽ che giấu các ký tự người dùng nhập bằng các dấu chấm tròn để bảo mật mật khẩu.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_40.webp"
   },
   {
     "id": "prm393___sp26___fe_036",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 36,
-    "question": "Dép in: { B } What is Flutter primarily used for?",
+    "question": "What is Flutter primarily used for?",
     "options": {
       "A": "Designing databases for mobile apps",
       "B": "Creating native applications from a single codebase",
       "C": "Developing server-side applications only",
       "D": "Building operating systems for mobile devices"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Flutter là bộ công cụ UI mã nguồn mở của Google dùng để xây dựng các ứng dụng biên dịch trực tiếp sang mã máy (natively compiled) cho nhiều nền tảng từ một codebase duy nhất.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_41.webp"
   },
   {
     "id": "prm393___sp26___fe_037",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 37,
-    "question": "Dép in: { B } Which method resets all form fields?",
+    "question": "Which method resets all form fields?",
     "options": {
       "A": "clear()",
       "B": "reset()",
       "C": "dispose()",
-      "D": "remove() exam"
+      "D": "remove()"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Phương thức formKey.currentState?.reset() sẽ xóa các thông báo lỗi và đưa tất cả các FormField trong Form về giá trị ban đầu (initialValue).",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_42.webp"
   },
   {
     "id": "prm393___sp26___fe_038",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 38,
-    "question": "Dép in: { C } Which Dart keyword is used to define a constant value at compile time?",
+    "question": "Which Dart keyword is used to define a constant value at compile time?",
     "options": {
       "A": "final",
       "B": "static",
       "C": "const",
       "D": "var"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "C",
+    "explanation": "Từ khóa const trong Dart định nghĩa một hằng số tại thời điểm biên dịch (compile-time constant), trong khi final chỉ là biến khởi tạo một lần tại thời điểm runtime.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_43.webp"
   },
   {
     "id": "prm393___sp26___fe_039",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 39,
-    "question": "Dép in: { B } What happens after successful login?",
+    "question": "What happens after successful login?",
     "options": {
       "A": "App closes",
-      "B": "user session starts",
+      "B": "User session starts",
       "C": "Theme changes",
       "D": "Navigation resets"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Sau khi đăng nhập thành công, phiên làm việc của người dùng (user session) được khởi tạo kèm theo lưu token, và ứng dụng chuyển hướng đến màn hình chính.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_44.webp"
   },
   {
@@ -1311,149 +1316,149 @@
       "D": "Writing backend APIs"
     },
     "correctAnswer": "B",
-    "explanation": "Đáp án tham khảo chính thức theo đề thi: B.",
+    "explanation": "Cài đặt và cấu hình Flutter SDK vào biến môi trường PATH là bước tiên quyết bắt buộc trước khi có thể chạy các lệnh như flutter run.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_45.webp"
   },
   {
     "id": "prm393___sp26___fe_041",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 41,
-    "question": "Dép in: { A } Which widget reacts to async data from local storage?",
+    "question": "Which widget reacts to async data from local storage?",
     "options": {
       "A": "FutureBuilder",
-      "B": "StreamBuiIder",
+      "B": "StreamBuilder",
       "C": "ListView",
       "D": "Provider"
     },
     "correctAnswer": "A",
-    "explanation": "",
+    "explanation": "Việc đọc dữ liệu bất đồng bộ một lần từ SharedPreferences hoặc SQLite trả về một Future; FutureBuilder là widget chuẩn để lắng nghe và hiển thị trạng thái của Future đó.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_46.webp"
   },
   {
     "id": "prm393___sp26___fe_042",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 42,
-    "question": "Dép in: { B } What does golden testing verify?",
+    "question": "What does golden testing verify?",
     "options": {
       "A": "API responses",
       "B": "UI appearance consistency",
       "C": "Database state",
       "D": "Authentication"
     },
-    "correctAnswer": "A",
-    "explanation": "Đáp án tham khảo chính thức theo đề thi: A.",
+    "correctAnswer": "B",
+    "explanation": "Golden test (so sánh hình ảnh pixel) so sánh ảnh chụp widget hiện tại với ảnh chuẩn 'golden file' đã phê duyệt từ trước để đảm bảo giao diện không bị lệch hoặc thay đổi bất ngờ.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_47.webp"
   },
   {
     "id": "prm393___sp26___fe_043",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 43,
-    "question": "Dép in: { B } Why should state be kept as local as possible?",
+    "question": "Why should state be kept as local as possible?",
     "options": {
       "A": "Better animations",
       "B": "Reduce unnecessary rebuilds",
       "C": "Simplify UI",
       "D": "Improve navigation"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Giữ state cục bộ ở widget thấp nhất có thể giúp thu hẹp phạm vi rebuild, ngăn chặn việc vẽ lại không cần thiết các widget cha và các widget anh em.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_48.webp"
   },
   {
     "id": "prm393___sp26___fe_044",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 44,
-    "question": "Dép in: { B } What is the benefit of composing widgets in Flutter?",
+    "question": "What is the benefit of composing widgets in Flutter?",
     "options": {
       "A": "Faster compilation",
       "B": "Better code reuse and UI consistency",
       "C": "Reduced memory usage",
       "D": "Automatic navigation"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Nguyên lý Composition (ghép nối các widget nhỏ thành widget phức tạp hơn) giúp mã nguồn sạch, dễ tái sử dụng và đảm bảo tính nhất quán của giao diện người dùng.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_49.webp"
   },
   {
     "id": "prm393___sp26___fe_045",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 45,
-    "question": "Dép in: { C } What happens if a non-nullable variable is not initialized in Dart?",
+    "question": "What happens if a non-nullable variable is not initialized in Dart?",
     "options": {
       "A": "The app runs normally",
       "B": "A runtime exception occurs",
       "C": "A compile-time error occurs",
       "D": "The value becomes null automatically"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "C",
+    "explanation": "Với Sound Null Safety trong Dart, việc khai báo biến non-nullable mà không khởi tạo giá trị (hoặc không dùng late) sẽ bị trình biên dịch bắt lỗi ngay tại thời điểm biên dịch (compile-time error).",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_5.webp"
   },
   {
     "id": "prm393___sp26___fe_046",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 46,
-    "question": "Dép in: { D } Which status code indicates server error?",
+    "question": "Which status code indicates server error?",
     "options": {
-      "A": "20?",
+      "A": "200",
       "B": "301",
       "C": "404",
-      "D": "50?"
+      "D": "500"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "D",
+    "explanation": "Mã trạng thái HTTP trong dải 5xx (đặc biệt là 500 Internal Server Error) chỉ ra rằng server đã gặp sự cố nội bộ và không thể xử lý được request từ client.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_50.webp"
   },
   {
     "id": "prm393___sp26___fe_047",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 47,
-    "question": "Dép in: { B } Which command builds a release APK?",
+    "question": "Which command builds a release APK?",
     "options": {
       "A": "flutter run",
       "B": "flutter build apk",
       "C": "flutter doctor",
       "D": "flutter clean"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "B",
+    "explanation": "Lệnh flutter build apk (hoặc flutter build apk --release) biên dịch ứng dụng Flutter thành file gói APK ở chế độ release để cài đặt hoặc phân phối trên Android.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_6.webp"
   },
   {
     "id": "prm393___sp26___fe_048",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 48,
-    "question": "Dép in: { C } Which widget allows overlapping of its child widgets?",
+    "question": "Which widget allows overlapping of its child widgets?",
     "options": {
       "A": "Column",
       "B": "Row",
       "C": "Stack",
       "D": "Expanded"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "C",
+    "explanation": "Widget Stack sắp xếp các widget con chồng lên nhau theo thứ tự từ dưới lên trên (z-index) và có thể định vị linh hoạt bằng Positioned.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_7.webp"
   },
   {
     "id": "prm393___sp26___fe_049",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 49,
-    "question": "Dép in: { C } Which platforms can Flutter applications target using a single codebase?",
+    "question": "Which platforms can Flutter applications target using a single codebase?",
     "options": {
       "A": "Android only",
       "B": "iOS only",
       "C": "Android, iOS, web, and desktop",
-      "D": "Web servers only Ekam"
+      "D": "Web servers only"
     },
-    "correctAnswer": "A",
-    "explanation": "",
+    "correctAnswer": "C",
+    "explanation": "Flutter hỗ trợ phát triển đa nền tảng từ một mã nguồn duy nhất bao gồm Android, iOS, Web, Windows, macOS và Linux.",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_8.webp"
   },
   {
     "id": "prm393___sp26___fe_050",
     "exam": "PRM393 - SP26 - FE",
     "questionNumber": 50,
-    "question": "Dép in: { A } What is the main risk of improper state management?",
+    "question": "What is the main risk of improper state management?",
     "options": {
       "A": "UI inconsistency",
       "B": "Longer compile time",
@@ -1461,7 +1466,7 @@
       "D": "Build errors"
     },
     "correctAnswer": "A",
-    "explanation": "",
+    "explanation": "Quản lý trạng thái không đúng cách dễ dẫn đến hiện tượng dữ liệu không đồng bộ giữa các màn hình, gây ra lỗi hiển thị giao diện không nhất quán (UI inconsistency).",
     "image": "PRM393 - SP26 - FE/PRM393 SP26 FE_9.webp"
   },
   {
@@ -1888,10 +1893,11 @@
     "options": {
       "A": "Storing passwords locally",
       "C": "using HTTP",
-      "D": "Hardcoding tokens"
+      "D": "Hardcoding tokens",
+      "B": "Encrypting credentials"
     },
     "correctAnswer": "B",
-    "explanation": "Đáp án tham khảo chính thức theo đề thi: B.",
+    "explanation": "Mã hóa thông tin xác thực (Encrypting credentials) trước khi truyền qua mạng hoặc lưu trữ là biện pháp thiết yếu để ngăn chặn bị đánh cắp tài khoản.",
     "image": "PRM393 - SU26 - B5 - FE/PRM393 SU26 B5 FE_029.webp"
   },
   {
