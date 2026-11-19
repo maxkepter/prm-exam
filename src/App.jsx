@@ -804,7 +804,8 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.code === 'Space') {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+      if (e.code === 'Space' || e.code === 'Enter' || e.key === 'Enter') {
         e.preventDefault();
         setFlipped(prev => !prev);
       } else if (e.code === 'ArrowRight') {
@@ -916,7 +917,7 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
             </div>
 
             <div className="pt-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between text-xs text-slate-400">
-              <span>Mẹo: Nhấn Phím Cách (Space) để lật</span>
+              <span>Mẹo: Nhấn Enter hoặc Space để lật</span>
               <span className="font-semibold text-fpt-orange flex items-center">
                 Lật xem đáp án ↷
               </span>
@@ -952,7 +953,7 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
             </div>
 
             <div className="pt-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between text-xs text-slate-400">
-              <span>Nhấn Space hoặc Click để lật lại câu hỏi</span>
+              <span>Nhấn Enter / Space hoặc Click để lật lại</span>
               <button 
                 onClick={(e) => {
                   e.stopPropagation();
