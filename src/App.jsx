@@ -779,8 +779,8 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
   const [filterExam, setFilterExam] = useState(() => {
     try { return localStorage.getItem('prm_flashcard_filter') || 'ALL'; } catch { return 'ALL'; }
   });
-  const [flipped, setFlipped] = useState(false);
-  const [isFlippingAnim, setIsFlippingAnim] = useState(true);
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [revealedIds, setRevealedIds] = useState([]);
   const [masteredIds, setMasteredIds] = useState(() => {
     try { return JSON.parse(localStorage.getItem('prm_mastered') || '[]'); } catch { return []; }
   });
@@ -831,19 +831,8 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
 
   const currCard = deck[currentIndex] || deck[0];
 
-  // Chỉ nạp nội dung của thẻ vào mặt sau khi người dùng chủ động lật thẻ
-  // Nhờ đó khi chuyển sang thẻ mới mà chưa lật, mặt sau tuyệt đối không chứa đáp án của thẻ mới!
-  const [revealedCard, setRevealedCard] = useState(currCard);
-
-  // Chuyển thẻ an toàn: tắt hiệu ứng lật ngược tức thì và reset lật
   const changeCard = (newIndex) => {
-    setIsFlippingAnim(false);
-    setFlipped(false);
     setCurrentIndex(newIndex);
-    // Bật lại hiệu ứng 3D sau khi thẻ mới đã ở mặt trước (0deg)
-    setTimeout(() => {
-      setIsFlippingAnim(true);
-    }, 60);
   };
 
   const handleNext = () => {
@@ -862,20 +851,32 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
     }
   };
 
-  const handleFlip = () => {
-    setIsFlippingAnim(true);
-    if (!flipped && currCard) {
-      setRevealedCard(currCard);
-    }
-    setFlipped(prev => !prev);
+  const handleSelectOption = (key) => {
+    if (!currCard) return;
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [currCard.id]: key
+    }));
+  };
+
+  const handleRevealAnswer = () => {
+    if (!currCard) return;
+    setRevealedIds(prev => (prev.includes(currCard.id) ? prev : [...prev, currCard.id]));
+  };
+
+  const handleResetCard = () => {
+    if (!currCard) return;
+    setSelectedAnswers(prev => {
+      const next = { ...prev };
+      delete next[currCard.id];
+      return next;
+    });
+    setRevealedIds(prev => prev.filter(id => id !== currCard.id));
   };
 
   const shuffleDeck = () => {
-    setIsFlippingAnim(false);
-    setFlipped(false);
     const rand = Math.floor(Math.random() * deck.length);
     setCurrentIndex(rand);
-    setTimeout(() => setIsFlippingAnim(true), 60);
   };
 
   const toggleMastered = (id) => {
@@ -888,7 +889,6 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
 
   // Hỗ trợ thao tác vuốt màn hình cảm ứng trên điện thoại
   const touchStartRef = React.useRef({ x: 0, y: 0, time: 0 });
-  const hasSwipedRef = React.useRef(false);
 
   const handleTouchStart = (e) => {
     if (e.touches && e.touches[0]) {
@@ -897,7 +897,6 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
         y: e.touches[0].clientY,
         time: Date.now()
       };
-      hasSwipedRef.current = false;
     }
   };
 
@@ -907,9 +906,8 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
     const diffY = touchStartRef.current.y - e.changedTouches[0].clientY;
     const elapsed = Date.now() - touchStartRef.current.time;
 
-    // Vuốt ngang dứt khoát: trong 600ms, khoảng cách > 45px và góc nghiêng ngang
-    if (elapsed < 600 && Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY) * 1.4) {
-      hasSwipedRef.current = true;
+    // Vuốt ngang dứt khoát: trong 600ms, khoảng cách > 55px và góc nghiêng ngang
+    if (elapsed < 600 && Math.abs(diffX) > 55 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
       if (diffX > 0) {
         handleNext();
       } else {
@@ -918,20 +916,47 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
     }
   };
 
-  const handleCardClick = () => {
-    if (hasSwipedRef.current) {
-      hasSwipedRef.current = false;
-      return;
-    }
-    handleFlip();
-  };
+  const selectedOption = currCard ? selectedAnswers[currCard.id] : null;
+  const isRevealed = Boolean(selectedOption) || (currCard ? revealedIds.includes(currCard.id) : false);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+      
+      const keyUpper = e.key.toUpperCase();
+      if (['A', 'B', 'C', 'D'].includes(keyUpper) && currCard && currCard.options[keyUpper]) {
+        e.preventDefault();
+        handleSelectOption(keyUpper);
+        return;
+      }
+      if (e.key === '1' && currCard && currCard.options['A']) {
+        e.preventDefault();
+        handleSelectOption('A');
+        return;
+      }
+      if (e.key === '2' && currCard && currCard.options['B']) {
+        e.preventDefault();
+        handleSelectOption('B');
+        return;
+      }
+      if (e.key === '3' && currCard && currCard.options['C']) {
+        e.preventDefault();
+        handleSelectOption('C');
+        return;
+      }
+      if (e.key === '4' && currCard && currCard.options['D']) {
+        e.preventDefault();
+        handleSelectOption('D');
+        return;
+      }
+
       if (e.code === 'Space' || e.code === 'Enter' || e.key === 'Enter') {
         e.preventDefault();
-        handleFlip();
+        if (!isRevealed) {
+          handleRevealAnswer();
+        } else {
+          handleNext();
+        }
       } else if (e.code === 'ArrowRight') {
         handleNext();
       } else if (e.code === 'ArrowLeft') {
@@ -940,7 +965,7 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, deck, flipped, currCard]);
+  }, [currentIndex, deck, isRevealed, currCard]);
 
   if (!currCard) {
     return (
@@ -955,7 +980,6 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
 
   const isMastered = masteredIds.includes(currCard.id);
   const isBookmarked = bookmarks.includes(currCard.id);
-  const displayBackCard = revealedCard || currCard;
 
   return (
     <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6 py-2 sm:py-6">
@@ -1021,118 +1045,231 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
         </div>
       </div>
 
-      {/* Thẻ 3D Flashcard có hỗ trợ Touch Swipe và chống lộ đáp án */}
+      {/* Thẻ tương tác Flashcard kiểm tra đáp án trực tiếp */}
       <div 
-        className="perspective-1000 w-full min-h-[380px] sm:min-h-[440px] cursor-pointer select-none"
-        onClick={handleCardClick}
+        className="w-full bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-700/80 p-4 sm:p-7 select-none transition-all duration-200"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <div className={`relative w-full h-full min-h-[380px] sm:min-h-[440px] rounded-2xl sm:rounded-3xl p-4 sm:p-8 transform-style-3d shadow-xl border ${
-          isFlippingAnim ? 'transition-transform duration-500' : 'transition-none'
-        } ${
-          flipped ? 'rotate-y-180 bg-white dark:bg-slate-800 border-orange-300 dark:border-orange-800' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'
-        }`}>
-          {/* MẶT TRƯỚC: CÂU HỎI */}
-          <div className={`absolute inset-0 p-4 sm:p-8 flex flex-col justify-between backface-hidden overflow-y-auto ${
-            flipped ? 'pointer-events-none opacity-0' : 'opacity-100'
-          }`}>
-            <div>
-              <div className="flex items-center justify-between mb-3 sm:mb-4">
-                <span className="px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-extrabold bg-orange-100 dark:bg-orange-950 text-fpt-orange uppercase">
-                  Câu Hỏi • #{currCard.questionNumber}
-                </span>
-                <div className="flex items-center space-x-1.5 sm:space-x-2" onClick={e => e.stopPropagation()}>
-                  <button
-                    onClick={() => toggleBookmark(currCard.id)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-amber-500 transition"
-                  >
-                    <BookmarkIcon filled={isBookmarked} className="w-5 h-5" />
-                  </button>
-                  {currCard.image && (
-                    <button
-                      onClick={() => onOpenImage(currCard.image)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-fpt-orange transition"
-                      title="Xem ảnh gốc"
-                    >
-                      <EyeIcon />
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              <h3 className="text-base sm:text-xl font-bold text-slate-900 dark:text-white leading-relaxed">
-                {currCard.question}
-              </h3>
-
-              <div className="mt-3.5 sm:mt-6 space-y-1.5 sm:space-y-2">
-                {['A', 'B', 'C', 'D'].map(k => {
-                  if (!currCard.options[k]) return null;
-                  return (
-                    <div key={k} className="p-2 sm:p-2.5 rounded-xl bg-slate-50 dark:bg-slate-750 text-xs sm:text-sm text-slate-700 dark:text-slate-300 flex items-start space-x-2 border border-slate-100 dark:border-slate-700">
-                      <span className="font-bold text-slate-400 shrink-0">{k}.</span>
-                      <span className="leading-snug">{currCard.options[k]}</span>
-                    </div>
-                  );
-                })}
-              </div>
+        <div className="space-y-4 sm:space-y-5">
+          {/* Header câu hỏi: Số câu, đề thi, bookmark & trạng thái */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-extrabold bg-orange-100 dark:bg-orange-950 text-fpt-orange uppercase">
+                Câu Hỏi • #{currCard.questionNumber}
+              </span>
+              <span className="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 font-medium truncate max-w-[140px] sm:max-w-none">
+                {currCard.exam}
+              </span>
             </div>
 
-            <div className="pt-3 sm:pt-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between text-[11px] sm:text-xs text-slate-400 mt-4">
-              <span className="hidden sm:inline">Mẹo: Nhấn Enter hoặc Space để lật</span>
-              <span className="sm:hidden">Chạm để lật thẻ</span>
-              <span className="font-semibold text-fpt-orange flex items-center">
-                Lật xem đáp án ↷
-              </span>
+            <div className="flex items-center space-x-1.5 sm:space-x-2">
+              <button
+                onClick={() => toggleBookmark(currCard.id)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-amber-500 transition"
+                title={isBookmarked ? "Bỏ đánh dấu" : "Đánh dấu câu hỏi"}
+              >
+                <BookmarkIcon filled={isBookmarked} className="w-5 h-5" />
+              </button>
+              {currCard.image && (
+                <button
+                  onClick={() => onOpenImage(currCard.image)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-fpt-orange transition"
+                  title="Xem ảnh gốc"
+                >
+                  <EyeIcon />
+                </button>
+              )}
+              <button
+                onClick={() => toggleMastered(currCard.id)}
+                className={`p-1.5 px-2.5 rounded-lg text-xs font-bold transition flex items-center space-x-1 ${
+                  isMastered ? 'bg-emerald-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 hover:bg-slate-200'
+                }`}
+                title="Đánh dấu đã thuộc"
+              >
+                <span>{isMastered ? '✓ Đã thuộc' : 'Thuộc'}</span>
+              </button>
             </div>
           </div>
 
-          {/* MẶT SAU: ĐÁP ÁN & GIẢI THÍCH (Chỉ render nội dung khi đã lật để ngăn lộ đáp án câu mới) */}
-          <div className={`absolute inset-0 p-4 sm:p-8 flex flex-col justify-between backface-hidden rotate-y-180 overflow-y-auto ${
-            !flipped ? 'pointer-events-none opacity-0' : 'opacity-100'
-          }`}>
-            <div className="space-y-3 sm:space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400">
-                  Đáp Án Chính Xác
-                </span>
-                <span className="text-[11px] sm:text-xs text-slate-400 truncate max-w-[150px] sm:max-w-none">{displayBackCard.exam}</span>
-              </div>
+          {/* Nội dung câu hỏi */}
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-relaxed">
+            {currCard.question}
+          </h3>
 
-              <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center space-x-3 sm:space-x-4">
-                <span className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-500 text-white font-black text-xl sm:text-2xl flex items-center justify-center shrink-0 shadow-md">
-                  {displayBackCard.correctAnswer}
-                </span>
-                <span className="text-sm sm:text-lg font-bold text-emerald-900 dark:text-emerald-200 leading-snug">
-                  {displayBackCard.options[displayBackCard.correctAnswer]}
-                </span>
-              </div>
+          {/* Danh sách các đáp án có thể chọn và check kết quả ngay */}
+          <div className="space-y-2 sm:space-y-2.5">
+            {['A', 'B', 'C', 'D'].map(k => {
+              if (!currCard.options[k]) return null;
+              const isChosen = selectedOption === k;
+              const isCorrect = currCard.correctAnswer === k;
 
-              {displayBackCard.explanation && (
-                <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-750 border border-slate-200/80 dark:border-slate-700/80 space-y-1">
-                  <div className="text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Giải Thích Chi Tiết</div>
-                  <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-                    {displayBackCard.explanation}
+              let cardStyle = "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-750 hover:border-orange-400 dark:hover:border-orange-500 hover:bg-orange-50/40 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-sm cursor-pointer";
+              let badgeStyle = "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold";
+
+              if (isRevealed) {
+                if (isChosen && isCorrect) {
+                  // Người dùng chọn đúng
+                  cardStyle = "border-2 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-100 shadow-md ring-2 ring-emerald-500/20";
+                  badgeStyle = "bg-emerald-500 text-white font-black";
+                } else if (isChosen && !isCorrect) {
+                  // Người dùng chọn sai (đáp án sai hiện màu đỏ)
+                  cardStyle = "border-2 border-rose-500 bg-rose-50 dark:bg-rose-950/40 text-rose-950 dark:text-rose-100 shadow-md ring-2 ring-rose-500/20";
+                  badgeStyle = "bg-rose-500 text-white font-black";
+                } else if (!isChosen && isCorrect) {
+                  // Đáp án đúng thực tế (hiện màu xanh)
+                  cardStyle = "border-2 border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200 font-medium";
+                  badgeStyle = "bg-emerald-500 text-white font-black";
+                } else {
+                  // Các đáp án sai khác không được chọn
+                  cardStyle = "border-slate-200/60 dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-800/40 text-slate-400 dark:text-slate-500 opacity-50";
+                  badgeStyle = "bg-slate-100 dark:bg-slate-800 text-slate-400";
+                }
+              }
+
+              return (
+                <div
+                  key={k}
+                  onClick={() => handleSelectOption(k)}
+                  className={`w-full p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border transition-all flex items-start space-x-2.5 sm:space-x-3 text-left ${cardStyle}`}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <span className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-xs sm:text-sm flex items-center justify-center shrink-0 transition-colors ${badgeStyle}`}>
+                    {k}
+                  </span>
+                  <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                    <span className="text-xs sm:text-sm leading-snug break-words">
+                      {currCard.options[k]}
+                    </span>
+                    {isRevealed && isChosen && isCorrect && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-black bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 shrink-0 self-start sm:self-auto">
+                        ✓ Bạn chọn đúng
+                      </span>
+                    )}
+                    {isRevealed && isChosen && !isCorrect && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-black bg-rose-100 dark:bg-rose-900 text-rose-700 dark:text-rose-300 shrink-0 self-start sm:self-auto">
+                        ✗ Bạn chọn sai
+                      </span>
+                    )}
+                    {isRevealed && !isChosen && isCorrect && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-black bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 shrink-0 self-start sm:self-auto">
+                        ✓ Đáp án đúng
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Hộp thông báo kết quả & Giải thích chi tiết */}
+          {isRevealed && (
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-700 space-y-3">
+              {/* Banner trạng thái kết quả */}
+              {selectedOption ? (
+                selectedOption === currCard.correctAnswer ? (
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center justify-between">
+                    <div className="flex items-center space-x-2.5">
+                      <span className="text-xl">🎉</span>
+                      <div>
+                        <div className="text-xs sm:text-sm font-extrabold text-emerald-800 dark:text-emerald-300">
+                          Chính xác! Đáp án đúng là {currCard.correctAnswer}
+                        </div>
+                        <div className="text-[11px] sm:text-xs text-emerald-700 dark:text-emerald-400">
+                          {currCard.options[currCard.correctAnswer]}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleResetCard}
+                      className="text-[11px] sm:text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline px-2 py-1 rounded bg-emerald-100/60 dark:bg-emerald-900/40 shrink-0"
+                    >
+                      Làm lại
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 flex items-center justify-between">
+                    <div className="flex items-center space-x-2.5">
+                      <span className="text-xl">❌</span>
+                      <div>
+                        <div className="text-xs sm:text-sm font-extrabold text-rose-800 dark:text-rose-300">
+                          Chưa chính xác! (Bạn chọn {selectedOption})
+                        </div>
+                        <div className="text-[11px] sm:text-xs text-rose-700 dark:text-rose-400">
+                          Đáp án đúng là: <strong className="font-extrabold text-emerald-600 dark:text-emerald-400">{currCard.correctAnswer}</strong> — {currCard.options[currCard.correctAnswer]}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleResetCard}
+                      className="text-[11px] sm:text-xs font-bold text-rose-700 dark:text-rose-400 hover:underline px-2 py-1 rounded bg-rose-100/60 dark:bg-rose-900/40 shrink-0"
+                    >
+                      Làm lại
+                    </button>
+                  </div>
+                )
+              ) : (
+                <div className="p-3 sm:p-3.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 flex items-center justify-between">
+                  <div className="flex items-center space-x-2.5">
+                    <span className="text-xl">💡</span>
+                    <div>
+                      <div className="text-xs sm:text-sm font-extrabold text-blue-800 dark:text-blue-300">
+                        Đáp án đúng: {currCard.correctAnswer}
+                      </div>
+                      <div className="text-[11px] sm:text-xs text-blue-700 dark:text-blue-400">
+                        {currCard.options[currCard.correctAnswer]}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleResetCard}
+                    className="text-[11px] sm:text-xs font-bold text-blue-700 dark:text-blue-400 hover:underline px-2 py-1 rounded bg-blue-100/60 dark:bg-blue-900/40 shrink-0"
+                  >
+                    Làm lại
+                  </button>
+                </div>
+              )}
+
+              {/* Giải thích chi tiết */}
+              {currCard.explanation && (
+                <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-750/80 border border-slate-200/80 dark:border-slate-700/80 space-y-1.5">
+                  <div className="text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center space-x-1.5">
+                    <span>📖</span>
+                    <span>Giải Thích Chi Tiết</span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                    {currCard.explanation}
                   </p>
                 </div>
               )}
             </div>
+          )}
 
-            <div className="pt-3 sm:pt-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between text-[11px] sm:text-xs text-slate-400 mt-4">
-              <span className="hidden sm:inline">Nhấn Enter / Space để lật lại</span>
-              <span className="sm:hidden">Chạm để xem câu hỏi</span>
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleMastered(displayBackCard.id);
-                }}
-                className={`px-2.5 sm:px-3 py-1.5 rounded-xl font-bold text-[11px] sm:text-xs transition ${
-                  masteredIds.includes(displayBackCard.id) ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
-                }`}
-              >
-                {masteredIds.includes(displayBackCard.id) ? '✓ Đã thuộc' : 'Đánh dấu đã thuộc'}
-              </button>
-            </div>
+          {/* Gợi ý thao tác ở chân thẻ */}
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-700/70 flex items-center justify-between text-[11px] sm:text-xs text-slate-400">
+            {!isRevealed ? (
+              <>
+                <span className="hidden sm:inline">Mẹo: Bấm phím A, B, C, D (hoặc 1-4) để chọn nhanh</span>
+                <span className="sm:hidden">Chạm đáp án để kiểm tra</span>
+                <button
+                  onClick={handleRevealAnswer}
+                  className="font-semibold text-fpt-orange hover:underline flex items-center space-x-1"
+                >
+                  <span>Xem đáp án ngay</span>
+                  <span>👁</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <span className="hidden sm:inline">Mẹo: Nhấn Enter hoặc Space để sang thẻ tiếp theo</span>
+                <span className="sm:hidden">Vuốt để chuyển thẻ</span>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400 flex items-center space-x-1">
+                  <span>Đã kiểm tra xong</span>
+                  <span>✓</span>
+                </span>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -1148,11 +1285,20 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
           <span className="sm:hidden">Trước</span>
         </button>
         <button
-          onClick={handleFlip}
+          onClick={isRevealed ? handleResetCard : handleRevealAnswer}
           className="h-11 sm:h-12 px-2 sm:px-6 rounded-2xl bg-orange-100 dark:bg-orange-950/80 text-fpt-orange font-bold text-xs sm:text-sm hover:bg-orange-200 active:scale-95 transition flex items-center justify-center space-x-1 shadow-sm"
         >
-          <span>🔄</span>
-          <span>{flipped ? 'Câu hỏi' : 'Lật thẻ'}</span>
+          {isRevealed ? (
+            <>
+              <span>🔄</span>
+              <span>Làm lại</span>
+            </>
+          ) : (
+            <>
+              <span>👁</span>
+              <span>Xem đáp án</span>
+            </>
+          )}
         </button>
         <button
           onClick={handleNext}
