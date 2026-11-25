@@ -16,6 +16,10 @@ export default {
           orange: '#f27024',
           blue: '#005baa',
           green: '#2ba84a'
+        },
+        slate: {
+          750: '#263348',
+          850: '#162032',
         }
       }
     },
