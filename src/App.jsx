@@ -79,7 +79,9 @@ export default function App() {
   const questions = activeSubject.questions;
 
   const [mode, setMode] = useState('quiz'); // 'quiz', 'flashcard', 'bank'
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    try { return localStorage.getItem('exam_theme') === 'dark'; } catch { return false; }
+  });
   const [bookmarks, setBookmarks] = useState(() => {
     try { return JSON.parse(localStorage.getItem('prm_bookmarks') || '[]'); } catch { return []; }
   });
@@ -101,6 +103,7 @@ export default function App() {
     } else {
       document.documentElement.classList.remove('dark');
     }
+    try { localStorage.setItem('exam_theme', darkMode ? 'dark' : 'light'); } catch {}
   }, [darkMode]);
 
   const toggleBookmark = (id) => {
