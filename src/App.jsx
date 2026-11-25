@@ -1,6 +1,49 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import confetti from 'canvas-confetti'
-import rawQuestions from './data/questions.json'
+import prmQuestions from './data/questions.json'
+import ite302cQuestions from './data/ite302c_questions.json'
+
+const SUBJECTS = {
+  PRM393: {
+    code: 'PRM393',
+    subtitle: 'Flutter & Android Cross-Platform Mobile',
+    placeholder: 'Tìm kiếm theo từ khóa (Dart, Flutter, BLoC, SQLite...)...',
+    questions: prmQuestions,
+  },
+  ITE302c: {
+    code: 'ITE302c',
+    subtitle: 'Ethics in IT & AI Governance',
+    placeholder: 'Tìm kiếm theo từ khóa (privacy, fairness, risk, GDPR...)...',
+    questions: ite302cQuestions,
+  },
+};
+
+const isCorrectOption = (answerStr, optKey) => Boolean(answerStr && answerStr.includes(optKey));
+
+const isAnswerMatch = (userAns, correctAnswer) => {
+  if (!userAns || !correctAnswer) return false;
+  const sortLetters = (s) => s.split('').sort().join('');
+  return sortLetters(userAns) === sortLetters(correctAnswer);
+};
+
+const formatOptionsText = (options, answerStr) =>
+  (answerStr || '')
+    .split('')
+    .map((k) => options?.[k])
+    .filter(Boolean)
+    .join(' | ');
+
+const dedupeQuestions = (list) => {
+  const norm = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const seen = new Set();
+  return list.filter((q) => {
+    const optSig = Object.values(q.options || {}).map(norm).sort().join('|');
+    const key = `${norm(q.question)}__${optSig}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
 
 // SVG Icons
 const SparklesIcon = () => (
@@ -29,7 +72,12 @@ const EyeIcon = () => (
 );
 
 export default function App() {
-  const questions = rawQuestions;
+  const [subject, setSubject] = useState(() => {
+    try { return localStorage.getItem('exam_subject') || 'PRM393'; } catch { return 'PRM393'; }
+  });
+  const activeSubject = SUBJECTS[subject] || SUBJECTS.PRM393;
+  const questions = activeSubject.questions;
+
   const [mode, setMode] = useState('quiz'); // 'quiz', 'flashcard', 'bank'
   const [darkMode, setDarkMode] = useState(false);
   const [bookmarks, setBookmarks] = useState(() => {
@@ -37,6 +85,15 @@ export default function App() {
   });
 
   const [lightboxImage, setLightboxImage] = useState(null);
+
+  useEffect(() => {
+    try { localStorage.setItem('exam_subject', subject); } catch {}
+  }, [subject]);
+
+  const subjectBookmarks = useMemo(() => {
+    const idSet = new Set(questions.map(q => q.id));
+    return bookmarks.filter(id => idSet.has(id));
+  }, [bookmarks, questions]);
 
   useEffect(() => {
     if (darkMode) {
@@ -58,17 +115,33 @@ export default function App() {
     <div className="flex flex-col min-h-screen">
       {/* Header */}
       <header className="sticky top-0 z-30 backdrop-blur-md bg-white/90 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 transition-colors">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-2 sm:space-x-3 cursor-pointer select-none" onClick={() => setMode('quiz')}>
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2">
+          <div className="flex items-center space-x-2 sm:space-x-3 cursor-pointer select-none min-w-0" onClick={() => setMode('quiz')}>
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-fpt-orange to-amber-400 flex items-center justify-center shadow-md sm:shadow-lg shadow-orange-500/20 text-white font-black text-base sm:text-xl shrink-0">
-              P
+              {subject[0]}
             </div>
-            <div>
-              <h1 className="font-extrabold text-sm sm:text-xl tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-                PRM393 <span className="text-fpt-orange font-bold">Exam Master</span>
+            <div className="min-w-0">
+              <h1 className="font-extrabold text-sm sm:text-xl tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent truncate">
+                {subject} <span className="text-fpt-orange font-bold hidden sm:inline">Exam Master</span>
               </h1>
-              <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 hidden sm:block">Flutter & Android Cross-Platform Mobile</p>
+              <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 hidden lg:block truncate">{activeSubject.subtitle}</p>
             </div>
+          </div>
+
+          <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl shrink-0">
+            {Object.keys(SUBJECTS).map((subj) => (
+              <button
+                key={subj}
+                onClick={() => setSubject(subj)}
+                className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all ${
+                  subject === subj
+                    ? 'bg-fpt-orange text-white shadow-sm'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                {subj}
+              </button>
+            ))}
           </div>
 
           <nav className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
@@ -113,7 +186,7 @@ export default function App() {
           <div className="flex items-center space-x-1.5 sm:space-x-2">
             <div className="hidden md:flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse mr-1.5"></span>
-              248 câu
+              {questions.length} câu
             </div>
             <button
               onClick={() => setDarkMode(!darkMode)}
@@ -133,25 +206,32 @@ export default function App() {
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 lg:p-8">
         {mode === 'quiz' && (
-          <QuizView 
-            allQuestions={questions} 
-            bookmarks={bookmarks} 
+          <QuizView
+            key={subject}
+            subject={subject}
+            allQuestions={questions}
+            bookmarks={subjectBookmarks}
             toggleBookmark={toggleBookmark}
             onOpenImage={setLightboxImage}
           />
         )}
         {mode === 'flashcard' && (
-          <FlashcardView 
-            allQuestions={questions} 
-            bookmarks={bookmarks} 
+          <FlashcardView
+            key={subject}
+            subject={subject}
+            allQuestions={questions}
+            bookmarks={subjectBookmarks}
             toggleBookmark={toggleBookmark}
             onOpenImage={setLightboxImage}
           />
         )}
         {mode === 'bank' && (
-          <BankView 
-            allQuestions={questions} 
-            bookmarks={bookmarks} 
+          <BankView
+            key={subject}
+            subject={subject}
+            placeholder={activeSubject.placeholder}
+            allQuestions={questions}
+            bookmarks={subjectBookmarks}
             toggleBookmark={toggleBookmark}
             onOpenImage={setLightboxImage}
           />
@@ -185,14 +265,15 @@ export default function App() {
 }
 
 // QUIZ VIEW
-function QuizView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
+function QuizView({ subject, allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
+  const randomCount = subject === 'ITE302c' ? 60 : 50;
   const [quizState, setQuizState] = useState('config');
   const [selectedExam, setSelectedExam] = useState('ALL_RANDOM');
   const [examPool, setExamPool] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
   const [flagged, setFlagged] = useState([]);
-  const [timeLeft, setTimeLeft] = useState(50 * 60);
+  const [timeLeft, setTimeLeft] = useState(randomCount * 60);
   const [timerActive, setTimerActive] = useState(false);
   const [filterReview, setFilterReview] = useState('all');
 
@@ -202,7 +283,7 @@ function QuizView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
     let pool = [];
     if (examChoice === 'ALL_RANDOM') {
       const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
-      pool = shuffled.slice(0, 50);
+      pool = shuffled.slice(0, randomCount);
     } else if (examChoice === 'BOOKMARKED') {
       pool = allQuestions.filter(q => bookmarks.includes(q.id));
       if (pool.length === 0) {
@@ -219,7 +300,7 @@ function QuizView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
     setCurrentIndex(0);
     setUserAnswers({});
     setFlagged([]);
-    setTimeLeft(Math.min(pool.length, 50) * 60);
+    setTimeLeft(Math.min(pool.length, randomCount) * 60);
     setTimerActive(true);
     setQuizState('in_progress');
   };
@@ -241,12 +322,23 @@ function QuizView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
   };
 
   const handleSelectOption = (optKey) => {
+    const currQ = examPool[currentIndex];
+    const isMulti = (currQ?.correctAnswer || '').length > 1;
     setUserAnswers(prev => {
       const next = { ...prev };
-      if (next[currentIndex] === optKey) {
-        delete next[currentIndex];
+      if (isMulti) {
+        const cur = next[currentIndex] || '';
+        const updated = cur.includes(optKey)
+          ? cur.replace(optKey, '')
+          : (cur + optKey).split('').sort().join('');
+        if (updated) next[currentIndex] = updated;
+        else delete next[currentIndex];
       } else {
-        next[currentIndex] = optKey;
+        if (next[currentIndex] === optKey) {
+          delete next[currentIndex];
+        } else {
+          next[currentIndex] = optKey;
+        }
       }
       return next;
     });
@@ -261,7 +353,7 @@ function QuizView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
     setQuizState('result');
     let correctCount = 0;
     examPool.forEach((q, idx) => {
-      if (userAnswers[idx] === q.correctAnswer) correctCount++;
+      if (isAnswerMatch(userAnswers[idx], q.correctAnswer)) correctCount++;
     });
     if (correctCount / examPool.length >= 0.7) {
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
@@ -276,22 +368,22 @@ function QuizView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
             Chế độ Luyện Đề
           </span>
           <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">
-            Thi Thử Trắc Nghiệm PRM393
+            Thi Thử Trắc Nghiệm {subject}
           </h2>
           <p className="text-slate-600 dark:text-slate-400 max-w-xl mx-auto text-sm sm:text-base">
-            Luyện tập trắc nghiệm chọn lọc từ các đề thi chính thức kỳ SU26 & SP26. Mỗi đề chuẩn 50 câu hỏi xáo trộn ngẫu nhiên.
+            Luyện tập trắc nghiệm tổng hợp từ các mã đề thi {subject}. Mỗi đề chuẩn {randomCount} câu hỏi xáo trộn ngẫu nhiên.
           </p>
         </div>
 
-        {/* 50 Random Questions Card */}
+        {/* Random Questions Card */}
         <div className="p-6 rounded-3xl bg-gradient-to-r from-orange-500 via-amber-500 to-fpt-orange text-white shadow-xl shadow-orange-500/20 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="space-y-2 text-center sm:text-left">
             <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/20 backdrop-blur-sm text-white">
               🔥 Chế độ chuẩn đề thi
             </div>
-            <h3 className="text-2xl font-black">50 Câu Hỏi Ngẫu Nhiên</h3>
+            <h3 className="text-2xl font-black">{randomCount} Câu Hỏi Ngẫu Nhiên</h3>
             <p className="text-white/90 text-sm max-w-md">
-              Rút trích 50 câu ngẫu nhiên từ toàn bộ kho 248 câu hỏi của tất cả các mã đề để thi thử như thi thật.
+              Rút trích {randomCount} câu ngẫu nhiên từ toàn bộ kho {allQuestions.length} câu hỏi của tất cả các mã đề để thi thử như thi thật.
             </p>
           </div>
           <button
@@ -450,7 +542,7 @@ function QuizView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
                 {['A', 'B', 'C', 'D'].map(optKey => {
                   const optText = currQ.options[optKey];
                   if (!optText) return null;
-                  const isSelected = selectedOpt === optKey;
+                  const isSelected = isCorrectOption(selectedOpt, optKey);
                   
                   let btnStyle = "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200";
                   let badgeStyle = "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300";
@@ -598,7 +690,7 @@ function QuizView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
     examPool.forEach((q, idx) => {
       const userAns = userAnswers[idx];
       if (!userAns) unansCount++;
-      else if (userAns === q.correctAnswer) correctCount++;
+      else if (isAnswerMatch(userAns, q.correctAnswer)) correctCount++;
       else incorrectCount++;
     });
 
@@ -606,7 +698,7 @@ function QuizView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
     const passed = scorePercent >= 60;
 
     const reviewList = examPool.filter((q, idx) => {
-      if (filterReview === 'wrong') return userAnswers[idx] && userAnswers[idx] !== q.correctAnswer;
+      if (filterReview === 'wrong') return userAnswers[idx] && !isAnswerMatch(userAnswers[idx], q.correctAnswer);
       if (filterReview === 'flagged') return flagged.includes(idx);
       if (filterReview === 'unanswered') return !userAnswers[idx];
       return true;
@@ -624,7 +716,7 @@ function QuizView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
               {passed ? 'Chúc mừng bạn đã hoàn thành xuất sắc!' : 'Hãy cố gắng luyện tập thêm nhé!'}
             </h3>
             <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm mt-1">
-              Kết quả thi thử môn PRM393 ({examPool.length} câu hỏi)
+              Kết quả thi thử môn {subject} ({examPool.length} câu hỏi)
             </p>
           </div>
 
@@ -652,7 +744,7 @@ function QuizView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
               onClick={() => startQuiz('ALL_RANDOM')}
               className="w-full sm:w-auto px-6 py-3 rounded-xl sm:rounded-2xl bg-fpt-orange text-white font-bold hover:bg-orange-600 shadow-lg shadow-orange-500/20 transition text-xs sm:text-sm"
             >
-              Thi Đề Mới (50 Câu Khác) 🚀
+              Thi Đề Mới ({randomCount} Câu Khác) 🚀
             </button>
             <button
               onClick={() => setQuizState('config')}
@@ -694,7 +786,7 @@ function QuizView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
             {reviewList.map((q) => {
               const origIdx = examPool.findIndex(item => item.id === q.id);
               const userAns = userAnswers[origIdx];
-              const isCorrect = userAns === q.correctAnswer;
+              const isCorrect = isAnswerMatch(userAns, q.correctAnswer);
 
               return (
                 <div 
@@ -741,8 +833,8 @@ function QuizView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
                     {['A', 'B', 'C', 'D'].map(k => {
                       const optText = q.options[k];
                       if (!optText) return null;
-                      const isUser = userAns === k;
-                      const isRight = q.correctAnswer === k;
+                      const isUser = isCorrectOption(userAns, k);
+                      const isRight = isCorrectOption(q.correctAnswer, k);
                       
                       let border = "border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400";
                       if (isRight) border = "border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-200 font-semibold";
@@ -775,9 +867,14 @@ function QuizView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
 }
 
 // FLASHCARD VIEW
-function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
+function FlashcardView({ subject, allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
+  const storagePrefix = subject === 'PRM393' ? 'prm' : subject.toLowerCase();
+  const filterKey = `${storagePrefix}_flashcard_filter`;
+  const indexKey = `${storagePrefix}_flashcard_index`;
+  const progressMapKey = `${storagePrefix}_flashcard_progress_map`;
+
   const [filterExam, setFilterExam] = useState(() => {
-    try { return localStorage.getItem('prm_flashcard_filter') || 'ALL'; } catch { return 'ALL'; }
+    try { return localStorage.getItem(filterKey) || 'ALL'; } catch { return 'ALL'; }
   });
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [revealedIds, setRevealedIds] = useState([]);
@@ -786,6 +883,7 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
   });
 
   const exams = useMemo(() => Array.from(new Set(allQuestions.map(q => q.exam))), [allQuestions]);
+  const dedupedAll = useMemo(() => dedupeQuestions(allQuestions), [allQuestions]);
 
   const deck = useMemo(() => {
     let list = allQuestions;
@@ -794,15 +892,15 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
     } else if (filterExam !== 'ALL') {
       list = allQuestions.filter(q => q.exam === filterExam);
     }
-    return list;
+    return dedupeQuestions(list);
   }, [allQuestions, filterExam, bookmarks]);
 
   const [currentIndex, setCurrentIndex] = useState(() => {
     try {
-      const savedFilter = localStorage.getItem('prm_flashcard_filter') || 'ALL';
-      const map = JSON.parse(localStorage.getItem('prm_flashcard_progress_map') || '{}');
+      const savedFilter = localStorage.getItem(filterKey) || 'ALL';
+      const map = JSON.parse(localStorage.getItem(progressMapKey) || '{}');
       if (typeof map[savedFilter] === 'number') return map[savedFilter];
-      const saved = localStorage.getItem('prm_flashcard_index');
+      const saved = localStorage.getItem(indexKey);
       return saved ? parseInt(saved, 10) || 0 : 0;
     } catch {
       return 0;
@@ -819,15 +917,15 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
   // Persist flashcard progress to local storage
   useEffect(() => {
     try {
-      localStorage.setItem('prm_flashcard_filter', filterExam);
-      localStorage.setItem('prm_flashcard_index', currentIndex.toString());
-      const map = JSON.parse(localStorage.getItem('prm_flashcard_progress_map') || '{}');
+      localStorage.setItem(filterKey, filterExam);
+      localStorage.setItem(indexKey, currentIndex.toString());
+      const map = JSON.parse(localStorage.getItem(progressMapKey) || '{}');
       map[filterExam] = currentIndex;
-      localStorage.setItem('prm_flashcard_progress_map', JSON.stringify(map));
+      localStorage.setItem(progressMapKey, JSON.stringify(map));
     } catch (e) {
       console.error(e);
     }
-  }, [currentIndex, filterExam]);
+  }, [currentIndex, filterExam, filterKey, indexKey, progressMapKey]);
 
   const currCard = deck[currentIndex] || deck[0];
 
@@ -853,10 +951,21 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
 
   const handleSelectOption = (key) => {
     if (!currCard) return;
-    setSelectedAnswers(prev => ({
-      ...prev,
-      [currCard.id]: key
-    }));
+    const targetLen = (currCard.correctAnswer || '').length;
+    if (targetLen > 1) {
+      setSelectedAnswers(prev => {
+        const cur = prev[currCard.id] || '';
+        const nextVal = cur.includes(key)
+          ? cur.replace(key, '')
+          : (cur + key).split('').sort().join('');
+        return { ...prev, [currCard.id]: nextVal };
+      });
+    } else {
+      setSelectedAnswers(prev => ({
+        ...prev,
+        [currCard.id]: key
+      }));
+    }
   };
 
   const handleRevealAnswer = () => {
@@ -917,7 +1026,10 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
   };
 
   const selectedOption = currCard ? selectedAnswers[currCard.id] : null;
-  const isRevealed = Boolean(selectedOption) || (currCard ? revealedIds.includes(currCard.id) : false);
+  const requiredCount = currCard ? Math.max(1, (currCard.correctAnswer || '').length) : 1;
+  const isRevealed = Boolean(
+    currCard && (revealedIds.includes(currCard.id) || (selectedOption && selectedOption.length >= requiredCount))
+  );
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -991,7 +1103,7 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
               const nextFilter = e.target.value;
               setFilterExam(nextFilter);
               try {
-                const map = JSON.parse(localStorage.getItem('prm_flashcard_progress_map') || '{}');
+                const map = JSON.parse(localStorage.getItem(progressMapKey) || '{}');
                 const savedIdx = typeof map[nextFilter] === 'number' ? map[nextFilter] : 0;
                 changeCard(savedIdx);
               } catch {
@@ -1000,7 +1112,7 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
             }}
             className="w-full sm:w-auto px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-fpt-orange shadow-sm"
           >
-            <option value="ALL">Tất cả đề ({allQuestions.length} câu)</option>
+            <option value="ALL">Tất cả đề - Không trùng ({dedupedAll.length} câu)</option>
             {exams.map(ex => (
               <option key={ex} value={ex}>{ex}</option>
             ))}
@@ -1101,13 +1213,16 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
           <div className="space-y-2 sm:space-y-2.5">
             {['A', 'B', 'C', 'D'].map(k => {
               if (!currCard.options[k]) return null;
-              const isChosen = selectedOption === k;
-              const isCorrect = currCard.correctAnswer === k;
+              const isChosen = isCorrectOption(selectedOption, k);
+              const isCorrect = isCorrectOption(currCard.correctAnswer, k);
 
               let cardStyle = "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-750 hover:border-orange-400 dark:hover:border-orange-500 hover:bg-orange-50/40 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-sm cursor-pointer";
               let badgeStyle = "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold";
 
-              if (isRevealed) {
+              if (!isRevealed && isChosen) {
+                cardStyle = "border-2 border-fpt-orange bg-orange-50/80 dark:bg-orange-950/40 text-orange-950 dark:text-orange-100 shadow-sm";
+                badgeStyle = "bg-fpt-orange text-white font-black";
+              } else if (isRevealed) {
                 if (isChosen && isCorrect) {
                   // Người dùng chọn đúng
                   cardStyle = "border-2 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-100 shadow-md ring-2 ring-emerald-500/20";
@@ -1168,7 +1283,7 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
             <div className="pt-3 border-t border-slate-100 dark:border-slate-700 space-y-3">
               {/* Banner trạng thái kết quả */}
               {selectedOption ? (
-                selectedOption === currCard.correctAnswer ? (
+                isAnswerMatch(selectedOption, currCard.correctAnswer) ? (
                   <div className="p-3 sm:p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center justify-between">
                     <div className="flex items-center space-x-2.5">
                       <span className="text-xl">🎉</span>
@@ -1177,7 +1292,7 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
                           Chính xác! Đáp án đúng là {currCard.correctAnswer}
                         </div>
                         <div className="text-[11px] sm:text-xs text-emerald-700 dark:text-emerald-400">
-                          {currCard.options[currCard.correctAnswer]}
+                          {formatOptionsText(currCard.options, currCard.correctAnswer)}
                         </div>
                       </div>
                     </div>
@@ -1197,7 +1312,7 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
                           Chưa chính xác! (Bạn chọn {selectedOption})
                         </div>
                         <div className="text-[11px] sm:text-xs text-rose-700 dark:text-rose-400">
-                          Đáp án đúng là: <strong className="font-extrabold text-emerald-600 dark:text-emerald-400">{currCard.correctAnswer}</strong> — {currCard.options[currCard.correctAnswer]}
+                          Đáp án đúng là: <strong className="font-extrabold text-emerald-600 dark:text-emerald-400">{currCard.correctAnswer}</strong> — {formatOptionsText(currCard.options, currCard.correctAnswer)}
                         </div>
                       </div>
                     </div>
@@ -1218,7 +1333,7 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
                         Đáp án đúng: {currCard.correctAnswer}
                       </div>
                       <div className="text-[11px] sm:text-xs text-blue-700 dark:text-blue-400">
-                        {currCard.options[currCard.correctAnswer]}
+                        {formatOptionsText(currCard.options, currCard.correctAnswer)}
                       </div>
                     </div>
                   </div>
@@ -1318,7 +1433,7 @@ function FlashcardView({ allQuestions, bookmarks, toggleBookmark, onOpenImage })
 }
 
 // BANK VIEW
-function BankView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
+function BankView({ subject, placeholder, allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
   const [search, setSearch] = useState('');
   const [filterExam, setFilterExam] = useState('ALL');
   const [filterBookmarkOnly, setFilterBookmarkOnly] = useState(false);
@@ -1346,7 +1461,7 @@ function BankView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
       <div className="bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-700/60 space-y-3 sm:space-y-5">
         <div>
           <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
-            Ngân Hàng 248 Câu Hỏi PRM393
+            Ngân Hàng {allQuestions.length} Câu Hỏi {subject}
           </h2>
           <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-0.5">
             Tra cứu, tìm kiếm và xem toàn bộ đề bài, các phương án lựa chọn và đáp án chi tiết.
@@ -1356,7 +1471,7 @@ function BankView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
         <div className="relative">
           <input
             type="text"
-            placeholder="Tìm kiếm theo từ khóa (Dart, Flutter, BLoC, SQLite...)..."
+            placeholder={placeholder || 'Tìm kiếm theo từ khóa...'}
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full pl-9 sm:pl-11 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-fpt-orange transition"
@@ -1463,7 +1578,7 @@ function BankView({ allQuestions, bookmarks, toggleBookmark, onOpenImage }) {
                     {['A', 'B', 'C', 'D'].map(k => {
                       const optText = q.options[k];
                       if (!optText) return null;
-                      const isRight = q.correctAnswer === k;
+                      const isRight = isCorrectOption(q.correctAnswer, k);
                       return (
                         <div 
                           key={k} 
