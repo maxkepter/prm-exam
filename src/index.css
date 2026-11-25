@@ -2,19 +2,137 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 3D Flip Card */
-.perspective-1000 {
-  perspective: 1000px;
+:root {
+  --bg: #ffffff;
+  --surface: #f3f3f3;
+  --surface-hover: #eaeaea;
+  --ink: #232323;
+  --muted: #686868;
+  --accent: #a1ffcb;
+  --accent-ink: #232323;
+  --action: #232323;
+  --action-ink: #ffffff;
+  --inv-bg: #232323;
+  --inv-surface: #303030;
+  --inv-ink: #ffffff;
+  --inv-muted: #a4a4a4;
+  --line: rgba(35, 35, 35, 0.12);
+  --line-strong: rgba(35, 35, 35, 0.28);
+  --ease-ui: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
 }
-.transform-style-3d {
-  transform-style: preserve-3d;
+
+html.dark {
+  --bg: #16181d;
+  --surface: #1f2229;
+  --surface-hover: #282c35;
+  --ink: #f4f5f7;
+  --muted: #9ca3af;
+  --accent: #a1ffcb;
+  --accent-ink: #16181d;
+  --action: #a1ffcb;
+  --action-ink: #16181d;
+  --inv-bg: #22262e;
+  --inv-surface: #2c313b;
+  --inv-ink: #ffffff;
+  --inv-muted: #a4a4a4;
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.26);
 }
-.backface-hidden {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: "Instrument Sans", system-ui, sans-serif;
+    transition: background-color 180ms var(--ease-ui), color 180ms var(--ease-ui);
+  }
+
+  h1, h2, h3 {
+    letter-spacing: -0.028em;
+  }
 }
-.rotate-y-180 {
-  transform: rotateY(180deg);
+
+/* Micro-interactions (tasteskill motion layer) */
+.btn-primary {
+  background-color: var(--action);
+  color: var(--action-ink);
+  transition: transform 150ms var(--ease-ui), opacity 150ms var(--ease-ui), background-color 150ms var(--ease-ui);
+}
+
+.btn-secondary {
+  background-color: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  transition: transform 150ms var(--ease-ui), border-color 150ms var(--ease-ui), background-color 150ms var(--ease-ui);
+}
+
+.card-interactive {
+  background-color: var(--bg);
+  border: 1px solid var(--line);
+  transition: transform 180ms var(--ease-ui), border-color 180ms var(--ease-ui), background-color 180ms var(--ease-ui);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    opacity: 0.92;
+  }
+  .btn-secondary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    border-color: var(--line-strong);
+    background-color: var(--surface-hover);
+  }
+  .card-interactive:hover {
+    transform: translateY(-2px);
+    border-color: var(--line-strong);
+  }
+  .group:hover .m-arrow {
+    transform: translateX(3px);
+  }
+}
+
+.btn-primary:active:not(:disabled),
+.btn-secondary:active:not(:disabled) {
+  transform: translateY(1px) scale(0.985);
+}
+
+.m-arrow {
+  transition: transform 150ms var(--ease-ui);
+}
+
+@keyframes enterUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-enter {
+  animation: enterUp 420ms var(--ease-enter) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-enter {
+    animation: none;
+  }
+  .btn-primary,
+  .btn-secondary,
+  .card-interactive,
+  .m-arrow {
+    transition: none !important;
+    transform: none !important;
+  }
 }
 
 /* Custom scrollbar */
@@ -23,12 +141,9 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0.05);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.2);
+  background: var(--line-strong);
   border-radius: 9999px;
-}
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
 }

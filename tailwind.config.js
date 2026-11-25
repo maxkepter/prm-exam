@@ -8,20 +8,20 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'monospace'],
+        sans: ['"Instrument Sans"', 'system-ui', 'sans-serif'],
+        mono: ['"DM Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
       },
       colors: {
-        fpt: {
-          orange: '#f27024',
-          blue: '#005baa',
-          green: '#2ba84a'
+        mint: {
+          DEFAULT: '#a1ffcb',
+          soft: '#e8fff2',
+          deep: '#12804a',
         },
-        slate: {
-          750: '#263348',
-          850: '#162032',
-        }
-      }
+        ink: {
+          DEFAULT: '#232323',
+          muted: '#686868',
+        },
+      },
     },
   },
   plugins: [],

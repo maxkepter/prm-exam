@@ -1,0 +1,36 @@
+{
+ "url": "http://127.0.0.1:5300/index.html",
+ "views": {
+  "desktop": {
+   "width": 1440,
+   "height": 900,
+   "navH": 0,
+   "scrollHeight": 1049,
+   "screens": 1.17,
+   "sections": [
+    {
+     "n": 1,
+     "tag": "div",
+     "id": "",
+     "cls": "max-w-4xl mx-auto space-y-8 py-4 sm:py-8 animate-enter",
+     "top": 89,
+     "h": 936,
+     "hScreens": 1.04,
+     "offGrid": 36,
+     "tiles": [
+      {
+       "file": "desktop-sec-01-a.jpg",
+       "scrollY": 89
+      },
+      {
+       "file": "desktop-sec-01-b.jpg",
+       "scrollY": 125
+      }
+     ]
+    }
+   ],
+   "consoleErrors": []
+  }
+ },
+ "at": "2026-11-25T13:03:24.529Z"
+}
