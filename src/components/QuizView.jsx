@@ -22,7 +22,7 @@ export default function QuizView({
   toggleBookmark,
   onOpenImage,
 }) {
-  const randomCount = subject === 'ITE302c' ? 60 : 50;
+  const randomCount = ['ITE302c', 'MLN122'].includes(subject) ? 60 : 50;
   const [quizState, setQuizState] = useState('config');
   const [examPool, setExamPool] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);

@@ -1,5 +1,6 @@
 import prmQuestions from '../data/questions.json';
 import ite302cQuestions from '../data/ite302c_questions.json';
+import mln122Questions from '../data/mln122_questions.json';
 
 export const SUBJECTS = {
   PRM393: {
@@ -13,6 +14,12 @@ export const SUBJECTS = {
     subtitle: 'Ethics in IT & AI Governance',
     placeholder: 'Tìm kiếm theo từ khóa (privacy, fairness, risk, GDPR...)...',
     questions: ite302cQuestions,
+  },
+  MLN122: {
+    code: 'MLN122',
+    subtitle: 'Kinh tế chính trị Mác - Lênin',
+    placeholder: 'Tìm kiếm theo từ khóa (hàng hóa, giá trị, tư bản...)...',
+    questions: mln122Questions,
   },
 };
 
@@ -33,7 +40,7 @@ export const formatOptionsText = (options, answerStr) =>
     .join(' | ');
 
 export const dedupeQuestions = (list) => {
-  const norm = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const norm = (s) => (s || '').normalize('NFC').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
   const seen = new Set();
   return list.filter((q) => {
     const optSig = Object.values(q.options || {}).map(norm).sort().join('|');
